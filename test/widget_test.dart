@@ -2,18 +2,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:assignment1/main.dart';
 
 void main() {
-  testWidgets('Splash screen loads correctly and navigates', (WidgetTester tester) async {
+  testWidgets('Splash screen loads correctly and navigates to login', (WidgetTester tester) async {
     await tester.pumpWidget(const Assignment1App());
 
-    // Verify that Assignment1 title is shown on splash screen
+    // Verify splash screen elements
     expect(find.text('Assignment1'), findsOneWidget);
-    expect(find.text('Premium Android Experience'), findsOneWidget);
 
-    // Pump timer for 3 seconds to complete navigation
+    // Pump timer to trigger navigation to login screen
     await tester.pump(const Duration(seconds: 3));
     await tester.pumpAndSettle();
 
-    // Verify navigation to login placeholder
-    expect(find.textContaining('Login Screen Placeholder'), findsOneWidget);
+    // Verify login screen elements
+    expect(find.text('Welcome Back'), findsOneWidget);
+    expect(find.text('Sign In'), findsOneWidget);
+    expect(find.text('Forgot Password?'), findsOneWidget);
   });
 }
