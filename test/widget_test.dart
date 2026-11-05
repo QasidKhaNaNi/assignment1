@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:assignment1/main.dart';
+import 'package:assignment1/screens/home_screen.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   testWidgets('Full auth flow: Splash -> Login -> Signup loads correctly', (WidgetTester tester) async {
@@ -25,5 +27,20 @@ void main() {
     expect(find.text('Create Account'), findsNWidgets(2));
     expect(find.text('Full Name'), findsOneWidget);
     expect(find.text('Confirm Password'), findsOneWidget);
+  });
+
+  testWidgets('Home screen renders dashboard cards and user greeting', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: HomeScreen(userName: 'Qasid Khanani'),
+      ),
+    );
+
+    expect(find.text('Welcome back,'), findsOneWidget);
+    expect(find.text('Qasid Khanani'), findsOneWidget);
+    expect(find.text('Dashboard Overview'), findsOneWidget);
+    expect(find.text('Feature Dashboard'), findsOneWidget);
+    expect(find.text('Analytics'), findsOneWidget);
+    expect(find.text('Projects'), findsOneWidget);
   });
 }

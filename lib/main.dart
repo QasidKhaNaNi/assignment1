@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const Assignment1App());
@@ -27,30 +28,8 @@ class Assignment1App extends StatelessWidget {
         '/': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScreen(),
-        '/home': (context) => const _HomePlaceholderScreen(),
+        '/home': (context) => const HomeScreen(),
       },
-    );
-  }
-}
-
-// Temporary placeholder until feature/home-page branch is created
-class _HomePlaceholderScreen extends StatelessWidget {
-  const _HomePlaceholderScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F0C29),
-      body: Center(
-        child: Text(
-          'Home Screen Placeholder\n(To be implemented in feature/home-page)',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
-            fontSize: 18,
-          ),
-        ),
-      ),
     );
   }
 }
