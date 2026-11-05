@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/signup_screen.dart';
 
 void main() {
   runApp(const Assignment1App());
@@ -25,32 +26,9 @@ class Assignment1App extends StatelessWidget {
       routes: {
         '/': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const _SignupPlaceholderScreen(),
+        '/signup': (context) => const SignupScreen(),
         '/home': (context) => const _HomePlaceholderScreen(),
       },
-    );
-  }
-}
-
-// Temporary placeholder until feature/signup-screen branch is created
-class _SignupPlaceholderScreen extends StatelessWidget {
-  const _SignupPlaceholderScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F0C29),
-      appBar: AppBar(backgroundColor: Colors.transparent),
-      body: Center(
-        child: Text(
-          'Sign Up Screen Placeholder\n(To be implemented in feature/signup-screen)',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
-            fontSize: 18,
-          ),
-        ),
-      ),
     );
   }
 }
