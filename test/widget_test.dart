@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:assignment1/main.dart';
+import 'package:assignment1/providers/cart_provider.dart';
 import 'package:assignment1/screens/home_screen.dart';
+import 'package:assignment1/screens/product_listing_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -29,18 +31,46 @@ void main() {
     expect(find.text('Confirm Password'), findsOneWidget);
   });
 
-  testWidgets('Home screen renders dashboard cards and user greeting', (WidgetTester tester) async {
+  testWidgets('Home screen renders dashboard cards and product entry', (WidgetTester tester) async {
+    final cartProvider = CartProvider();
     await tester.pumpWidget(
-      const MaterialApp(
-        home: HomeScreen(userName: 'Qasid Khanani'),
+      CartScope(
+        notifier: cartProvider,
+        child: const MaterialApp(
+          home: HomeScreen(userName: 'Qasid Khanani'),
+        ),
       ),
     );
 
     expect(find.text('Welcome back,'), findsOneWidget);
     expect(find.text('Qasid Khanani'), findsOneWidget);
     expect(find.text('Dashboard Overview'), findsOneWidget);
-    expect(find.text('Feature Dashboard'), findsOneWidget);
-    expect(find.text('Analytics'), findsOneWidget);
-    expect(find.text('Projects'), findsOneWidget);
+    expect(find.text('Store Catalog'), findsOneWidget);
+    expect(find.text('Browse Products'), findsOneWidget);
+  });
+
+  testWidgets('Product listing screen renders products, search and filters', (WidgetTester tester) async {
+    final cartProvider = CartProvider();
+    await tester.pumpWidget(
+      CartScope(
+        notifier: cartProvider,
+        child: const MaterialApp(
+          home: ProductListingScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Premium Store'), findsOneWidget);
+    expect(find.text('Wireless Pro Headphones'), findsOneWidget);
+    expect(find.text('Smart Watch Ultra'), findsOneWidget);
+
+    // Search filter test
+    await tester.enterText(find.byType(TextField), 'Smart Watch');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Smart Watch Ultra'), findsOneWidget);
+    expect(find.text('Wireless Pro Headphones'), findsNothing);
   });
 }

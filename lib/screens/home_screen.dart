@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../providers/cart_provider.dart';
 
 class HomeScreen extends StatelessWidget {
   final String userName;
@@ -62,35 +63,39 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cartProvider = CartProvider.of(context);
+    final cartItemCount = cartProvider.itemCount;
+
     final List<Map<String, dynamic>> features = [
+      {
+        'title': 'Store Catalog',
+        'subtitle': 'Explore e-commerce items',
+        'icon': Icons.storefront_rounded,
+        'color': const Color(0xFF6C63FF),
+        'route': '/products',
+      },
       {
         'title': 'Analytics',
         'subtitle': 'Performance & metrics',
         'icon': Icons.insights_rounded,
-        'color': const Color(0xFF6C63FF),
+        'color': const Color(0xFF00C9A7),
       },
       {
         'title': 'Projects',
         'subtitle': 'Manage your tasks',
         'icon': Icons.folder_special_rounded,
-        'color': const Color(0xFF00C9A7),
+        'color': const Color(0xFFFF8066),
       },
       {
         'title': 'Security',
         'subtitle': 'Auth & permissions',
         'icon': Icons.shield_outlined,
-        'color': const Color(0xFFFF8066),
+        'color': const Color(0xFF845EC2),
       },
       {
         'title': 'Settings',
         'subtitle': 'App preferences',
         'icon': Icons.settings_outlined,
-        'color': const Color(0xFF845EC2),
-      },
-      {
-        'title': 'Notifications',
-        'subtitle': '3 new alerts',
-        'icon': Icons.notifications_active_outlined,
         'color': const Color(0xFFFFC75F),
       },
       {
@@ -182,23 +187,80 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      IconButton(
-                        onPressed: () => _showLogoutDialog(context),
-                        icon: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.1),
+                      Row(
+                        children: [
+                          // Cart Entry Button
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/cart');
+                            },
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.08),
+                                    borderRadius: BorderRadius.circular(14),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.shopping_cart_outlined,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                                if (cartItemCount > 0)
+                                  Positioned(
+                                    top: -4,
+                                    right: -4,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFFFF6584),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      constraints: const BoxConstraints(
+                                        minWidth: 18,
+                                        minHeight: 18,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          '$cartItemCount',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
-                          child: const Icon(
-                            Icons.logout_rounded,
-                            color: Color(0xFFFF6584),
-                            size: 20,
+                          const SizedBox(width: 10),
+                          IconButton(
+                            onPressed: () => _showLogoutDialog(context),
+                            icon: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.08),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                ),
+                              ),
+                              child: const Icon(
+                                Icons.logout_rounded,
+                                color: Color(0xFFFF6584),
+                                size: 20,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
@@ -265,10 +327,30 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'All app modules & assignments integrated successfully.',
+                          'All app modules & e-commerce screens integrated successfully.',
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.8),
                             fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed('/products');
+                          },
+                          icon: const Icon(Icons.shopping_bag_outlined, size: 18),
+                          label: const Text('Browse Products'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFF6C63FF),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 18, vertical: 12),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -305,13 +387,17 @@ class HomeScreen extends StatelessWidget {
 
                       return InkWell(
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Opening ${item['title']} module...'),
-                              duration: const Duration(seconds: 1),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
+                          if (item.containsKey('route')) {
+                            Navigator.of(context).pushNamed(item['route']);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Opening ${item['title']} module...'),
+                                duration: const Duration(seconds: 1),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          }
                         },
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
