@@ -5,6 +5,7 @@ import 'package:assignment1/providers/cart_provider.dart';
 import 'package:assignment1/screens/home_screen.dart';
 import 'package:assignment1/screens/product_listing_screen.dart';
 import 'package:assignment1/screens/product_details_screen.dart';
+import 'package:assignment1/screens/cart_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -101,5 +102,41 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(cartProvider.itemCount, equals(1));
+  });
+
+  testWidgets('Cart screen renders empty state and cart item calculations', (WidgetTester tester) async {
+    final cartProvider = CartProvider();
+
+    // 1. Empty Cart Check
+    await tester.pumpWidget(
+      CartScope(
+        notifier: cartProvider,
+        child: const MaterialApp(
+          home: CartScreen(),
+        ),
+      ),
+    );
+
+    expect(find.text('Your Shopping Cart is Empty'), findsOneWidget);
+
+    // 2. Add product to cart and verify calculations
+    final testProduct = Product.sampleProducts.first;
+    cartProvider.addToCart(testProduct, quantity: 2);
+
+    await tester.pumpWidget(
+      CartScope(
+        notifier: cartProvider,
+        child: const MaterialApp(
+          home: CartScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text(testProduct.name), findsOneWidget);
+    expect(find.text('Proceed to Checkout'), findsOneWidget);
+    expect(find.text('Order Summary'), findsOneWidget);
+    expect(cartProvider.subtotal, equals(testProduct.price * 2));
   });
 }
