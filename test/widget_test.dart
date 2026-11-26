@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:assignment1/main.dart';
+import 'package:assignment1/models/product.dart';
 import 'package:assignment1/providers/cart_provider.dart';
 import 'package:assignment1/screens/home_screen.dart';
 import 'package:assignment1/screens/product_listing_screen.dart';
+import 'package:assignment1/screens/product_details_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -72,5 +74,32 @@ void main() {
 
     expect(find.text('Smart Watch Ultra'), findsOneWidget);
     expect(find.text('Wireless Pro Headphones'), findsNothing);
+  });
+
+  testWidgets('Product details screen renders specifications and updates cart', (WidgetTester tester) async {
+    final cartProvider = CartProvider();
+    final testProduct = Product.sampleProducts.first;
+
+    await tester.pumpWidget(
+      CartScope(
+        notifier: cartProvider,
+        child: MaterialApp(
+          home: ProductDetailsScreen(product: testProduct),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Product Details'), findsOneWidget);
+    expect(find.text(testProduct.name), findsOneWidget);
+    expect(find.text('Specifications'), findsOneWidget);
+    expect(find.text('Add to Cart'), findsOneWidget);
+
+    // Tap Add to Cart
+    await tester.tap(find.text('Add to Cart'));
+    await tester.pumpAndSettle();
+
+    expect(cartProvider.itemCount, equals(1));
   });
 }

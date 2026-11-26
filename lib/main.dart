@@ -6,6 +6,7 @@ import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/product_listing_screen.dart';
+import 'screens/product_details_screen.dart';
 
 void main() {
   runApp(const Assignment1App());
@@ -60,15 +61,7 @@ class _Assignment1AppState extends State<Assignment1App> {
             final args = settings.arguments;
             final product = args is Product ? args : Product.sampleProducts.first;
             return MaterialPageRoute(
-              builder: (context) => Scaffold(
-                backgroundColor: const Color(0xFF0F0C29),
-                body: Center(
-                  child: Text(
-                    'Details for ${product.name}',
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+              builder: (context) => ProductDetailsScreen(product: product),
               settings: settings,
             );
           }
