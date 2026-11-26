@@ -8,6 +8,7 @@ import 'screens/home_screen.dart';
 import 'screens/product_listing_screen.dart';
 import 'screens/product_details_screen.dart';
 import 'screens/cart_screen.dart';
+import 'screens/checkout_screen.dart';
 
 void main() {
   runApp(const Assignment1App());
@@ -57,6 +58,7 @@ class _Assignment1AppState extends State<Assignment1App> {
           '/home': (context) => const HomeScreen(),
           '/products': (context) => const ProductListingScreen(),
           '/cart': (context) => const CartScreen(),
+          '/checkout': (context) => const CheckoutScreen(),
         },
         onGenerateRoute: (settings) {
           if (settings.name == '/product-details') {
@@ -64,20 +66,6 @@ class _Assignment1AppState extends State<Assignment1App> {
             final product = args is Product ? args : Product.sampleProducts.first;
             return MaterialPageRoute(
               builder: (context) => ProductDetailsScreen(product: product),
-              settings: settings,
-            );
-          }
-          if (settings.name == '/checkout') {
-            return MaterialPageRoute(
-              builder: (context) => const Scaffold(
-                backgroundColor: Color(0xFF0F0C29),
-                body: Center(
-                  child: Text(
-                    'Checkout Screen Placeholder',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
               settings: settings,
             );
           }

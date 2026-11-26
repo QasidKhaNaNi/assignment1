@@ -6,6 +6,7 @@ import 'package:assignment1/screens/home_screen.dart';
 import 'package:assignment1/screens/product_listing_screen.dart';
 import 'package:assignment1/screens/product_details_screen.dart';
 import 'package:assignment1/screens/cart_screen.dart';
+import 'package:assignment1/screens/checkout_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -138,5 +139,43 @@ void main() {
     expect(find.text('Proceed to Checkout'), findsOneWidget);
     expect(find.text('Order Summary'), findsOneWidget);
     expect(cartProvider.subtotal, equals(testProduct.price * 2));
+  });
+
+  testWidgets('Checkout screen validates inputs and completes order', (WidgetTester tester) async {
+    final cartProvider = CartProvider();
+    cartProvider.addToCart(Product.sampleProducts.first, quantity: 1);
+
+    await tester.pumpWidget(
+      CartScope(
+        notifier: cartProvider,
+        child: const MaterialApp(
+          home: CheckoutScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Checkout'), findsOneWidget);
+    expect(find.text('Shipping Details'), findsOneWidget);
+    expect(find.text('Payment Method'), findsOneWidget);
+
+    // Fill in required fields
+    await tester.enterText(find.byType(TextFormField).at(1), '1234567890'); // Phone
+    await tester.enterText(find.byType(TextFormField).at(2), '123 University Street'); // Address
+    await tester.enterText(find.byType(TextFormField).at(3), 'New York'); // City
+
+    await tester.pumpAndSettle();
+
+    final placeOrderFinder = find.byType(ElevatedButton).last;
+    await tester.ensureVisible(placeOrderFinder);
+    await tester.tap(placeOrderFinder);
+
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Order Placed Successfully!'), findsOneWidget);
+    expect(cartProvider.itemCount, equals(0));
   });
 }
